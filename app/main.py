@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+from fastapi import Request
 
 from mcp_tools.tools import chat_with_llm
 
@@ -30,9 +31,12 @@ async def test():
 # MCP Tool Endpoint
 # -----------------------
 @app.post("/mcp/tools/llm_chat")
-async def llm_chat(payload: dict):
-    """
-    MCP-compatible Tool Endpoint
-    """
+async def llm_chat(request: Request):
+    raw = await request.body()
+    print("RAW BODY:", raw)
+
+    payload = await request.json()
+    print("PARSED JSON:", payload)
+
     prompt = payload.get("prompt")
     return await chat_with_llm(prompt)
